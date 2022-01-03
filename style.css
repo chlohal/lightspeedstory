@@ -105,6 +105,38 @@ h3 {
     font-style: oblique;
 }
 
+aside.tip {
+    margin: 1em 0;
+    font-size: 1.25rem;
+    background: #baa6fc;
+    padding: 0.5em;
+    border-radius: 1em;
+    display: flex;
+    font-style: italic;
+    align-items: center;
+}
+aside.tip::before {
+    font-family: 'Abril Fatface';
+    content: "!";
+    font-style: oblique;
+    font-weight: 900;
+    margin-right: 0.5em;
+    text-align: center;
+    display: inline-flex;
+    width: 1.25em;
+    height: 1.25em;
+    border-radius: 1em;
+    background: #825CFF;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+aside.tip:hover::before {
+    animation: rotate-wiggle 1s
+}
+
 .biglist {
     font-size: 1.5rem;
 }
@@ -150,7 +182,7 @@ h3 {
     line-height: 1.4;
 }
 
-.char-intro img, .char-intro aside {
+.char-intro svg, .char-intro aside {
     flex-basis: 0;
 }
 .char-intro aside {
@@ -160,9 +192,11 @@ h3 {
     align-items: center;
     justify-content: center;
 }
-.char-intro img {
+.char-intro svg {
     flex-grow: 2;
     min-width: 3em;
+    height: auto;
+    overflow: visible;
 }
 
 .char-intro {
@@ -191,6 +225,12 @@ h3 {
     border-radius: 0.5ch;
 }
 
+math, mjx-container {
+    margin: auto;
+    display: block;
+    text-align: center;
+    font-size: 2rem;
+}
 
 .asterisk {
     display: inline-block;
@@ -206,4 +246,10 @@ h3 {
 
 footer {
     height: 80vh;
+}
+
+@keyframes rotate-wiggle {
+    0% { transform: rotate(0deg) }
+    10%,50% { transform: rotate(-9deg) }
+    20%,60% { transform: rotate(-4deg) }
 }

@@ -16,6 +16,18 @@
    id="svg859"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="bob.svg">
+   <style>
+       #rect5141 {
+           animation: hand-wave 1s infinite;
+           transform-origin: center top;
+           transform-box: fill-box;
+       }
+       @keyframes hand-wave {
+         0% { transform: rotate(-150deg) }
+         50% { transform: rotate(-180deg) }
+         100% { transform: rotate(-150deg) }
+       }
+   </style>
   <defs
      id="defs853" />
   <sodipodi:namedview

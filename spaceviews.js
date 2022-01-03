@@ -1,5 +1,6 @@
 var DESIRED_TRAVERSAL_TIME_MS = 1000;
 var C_MVU = 100;
+var AGENT_MASS = 5;
 
 var views = {
     "intro": [
@@ -69,6 +70,59 @@ var views = {
             name: "c",
             velocity: C_MVU
         }
+    ],
+    "lengthcontraction": [
+        {
+            name: "Bob",
+            velocity: 0,
+            
+        },
+        {
+            name: "Taylor",
+            velocity: 80,
+        },
+        {
+            name: "c",
+            velocity: C_MVU
+        }
+    ],
+    "massexpansion": [
+        {
+            name: "Bob",
+            velocity: 0,
+            
+        },
+        {
+            name: "Taylor",
+            velocity: 80,
+        },
+        {
+            name: "c",
+            velocity: C_MVU
+        }
+    ],
+    "conclusion": [
+        {
+            name: "Bob",
+            velocity: 0,
+            
+        },
+        {
+            name: "Taylor",
+            velocity: 80,
+        },
+        {
+            name: "Allie",
+            velocity: 90,
+        },
+        {
+            name: "Pat",
+            velocity: 99.9,
+        },
+        {
+            name: "c",
+            velocity: C_MVU
+        }
     ]
 };
 
@@ -104,6 +158,8 @@ function addView(view) {
     
     viewData.reverse().forEach((x,i,a)=> {
         x.clock = view.hasAttribute("data-clock");
+        x.mass = view.hasAttribute("data-mass");
+        x.length = view.hasAttribute("data-length");
         
         var agentLayerRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         var height = h / a.length;
@@ -184,7 +240,7 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
         
         if(tooltip && vInC == 0) {
             tooltip.style.opacity = (window.scrollY - initialScrollY - initialDistanceFromTop + fieldHeight) * ( 2 / rowHeight );
-            tooltip.setAttribute("transform", `translateY(${100 * Math.sin(scrollTransform)})`)
+            tooltip.setAttribute("transform", `translateY(${100 * Math.sin(scrollTransform)}px)`)
         } else if(tooltip) {
             tooltip.style.opacity = 0;
         }
@@ -204,7 +260,7 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
         } else {
             isInViewport = false;
         }
-    })).observe(container);
+    })).observe(parent);
     
     return function(newRelativeVelocity) {
         vInC = newRelativeVelocity / C_MVU;
@@ -249,6 +305,10 @@ function makeAgentVisualisation(config) {
     var visSize = elem.size;
     
     var clock, clockText, firstClockTime;
+
+    var mass;
+
+    var length = false;
     
     if(config.velocity != C_MVU) {
         if(config.clock) {
@@ -261,6 +321,14 @@ function makeAgentVisualisation(config) {
             group.appendChild(clock);
             group.appendChild(clockText);
         }
+        if(config.mass) {
+            mass = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+            mass.style.fill = elem.elem.style.fill;
+            mass.style.opacity = 0.2;
+            group.appendChild(mass);
+        }
+
+        length = config.length;
     }
     
     return {
@@ -293,15 +361,25 @@ function makeAgentVisualisation(config) {
                 
                 clock.setAttribute("d", pathParams.join(" ") );
             }
+            if(mass) {
+                var massVisSize = visSize + gamma(relativeVelocity) * AGENT_MASS * 2;
+                mass.setAttribute("rx", massVisSize);
+                mass.setAttribute("rx", massVisSize);
+            }
+            if(length) {
+                var trans = `scaleX(${1/gamma(relativeVelocity)})`;
+                elem.elem.style.transform = trans;
+                if(mass) mass.style.transform = trans;
+                if(clock) clock.style.transform = trans;
+            }
         }
     }
 }
 function makePlanetSvg(v, config) {
-    v /= C_MVU;
     
-    var size = 1 - (v*v)/5;
+    var size = 0.75;
     
-    var colors = {"bob": "#F2E678", "taylor": "#0A8754", "pat": "#CC5803", "allie": "#48ACF0"};
+    var colors = {"bob": "#F2E678", "taylor": "#0A8754", "pat": "#CC2803", "allie": "#48ACF0"};
     
     var color = colors[config.name.toLowerCase()] || "#ffffff";
     
