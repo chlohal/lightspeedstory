@@ -177,7 +177,7 @@ function addView(view) {
             if(x.velocity != C_MVU) {
                 perspective = x.velocity;
                 redrawCanvasIfPossible(view, i);
-                agents.forEach((x,i)=>x(viewData[i].velocity - perspective));
+                agents.forEach((x,i)=>x(calculateRelativeSpeed(viewData[i].velocity, perspective)));
             }
         });
         
@@ -410,4 +410,8 @@ function gamma(v) {
         
 
     return g;
+}
+
+function calculateRelativeSpeed(v, p) {
+    return (v - p) / (1 - (v*p)/(C_MVU*C_MVU));
 }
