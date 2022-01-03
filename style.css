@@ -13,13 +13,18 @@ p {
     line-height: 1.6;
 }
 
-h1 {
+h1, h2 {
     font-family: 'Abril Fatface', cursive;
+    text-align: center;
     font-size: 4rem;
     letter-spacing: 0.05ch;
 }
 
-#hero {
+h2 {
+    font-size: 3rem;
+}
+
+footer, #hero {
     color: #F564A9;
     width: 100vw;
     height: 100vh;
@@ -30,6 +35,10 @@ h1 {
     background: #252422;
     
     border-bottom: #F564A9 solid 2ch;
+}
+
+footer {
+    border-bottom: 0;
 }
 
 #hero .subtitle {
@@ -213,6 +222,12 @@ aside.tip:hover::before {
 
 .character-taylor {
     background: #0A8754;
+    color: #FFFCF2;
+    padding: 0.25ch;
+    border-radius: 0.5ch;
+}
+.character-pat {
+    background: #CC2803;
     color: #FFFCF2;
     padding: 0.25ch;
     border-radius: 0.5ch;

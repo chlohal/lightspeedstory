@@ -10,6 +10,7 @@
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/mml-svg.js"></script>
     <script src="/stars.js"></script>
     <script src="/spaceviews.js"></script>
+    <script src="/calculated-spans.js" defer></script>
 </head>
 
 <body>
@@ -201,7 +202,7 @@
             <div class="starry view" data-clock data-viewid="timedilation"></div>
             <p>If Bob wants to get to Allie's house in 5 minutes, first he has to ask "5 minutes according to
                 <em>who?"</em>
-                If we're looking from Taylor's perspective, Bob takes <span class="calculated">gamma(80)</span> seconds
+                If we're looking from Taylor's perspective, Bob takes <span class="calculated">gamma(0.8)</span> seconds
                 to cross the screen once, but Bob sees himself as taking only 1 second.
             </p>
             <p>This time dilation factor follows a standard equation:</p>
@@ -245,27 +246,132 @@
             <p>If Bob measures how long his <em>own</em> movement takes, that measurement is the <span
                     class="postulate">proper time</span>--
                 it's the smallest that anyone can measure for that movement (T<sub>0</sub>). Anybody else who is moving
-                <span class="postulate">relative to</span> Bob will measure something larger (T).</p>
+                <span class="postulate">relative to</span> Bob will measure something larger (T).
+            </p>
             <p>In daily life, we don't notice the differences in time measurements since they're <em>tiny</em>. But when
                 you're travelling space, they're much larger! Even signals like GPS have to account for time dilation,
                 since they use accurate clocks to triangulate your location.</p>
         </section>
         <section id="lengthcontraction">
             <h2>Length Contraction</h2>
+            <p>Velocity is distance divided by time. If c <em>must</em> remain the same, and time is relative, then
+                <u>distance</u> must be relative too!
+            </p>
+            <p>From an observer's perspective, the distance being compressed shows as the <em>moving </em> "squishing"
+                in the direction of motion.</p>
             <div class="starry view" data-length data-viewid="lengthcontraction"></div>
+            <p>From Bob's perspective, his "squish" (or "contraction") will always be 100%-- he'll stay the same as
+                normal. Because time can never run backwards, length can never be increased-- only decreased. From
+                Taylor's perspective, Bob is around <span class="calculated">1/gamma(0.8)*100</span>% as long as he
+                would be at rest.</p>
+            <p>Bob's own conception of his length is called the <span class="postulate">rest length</span>; it has the
+                symbol L<sub>0</sub>. Anybody
+                else's measurement will be called the <span class="postulate">contracted length</span>, and given the
+                symbol L.
+            <p>
+            <p>Just like time dilation, length contraction follows a standard formula:</p>
+            <math>
+                <mi>L</mi>
+                <mo>=</mo>
+                <msub>
+                    <mrow>
+                        <mi>L</mi>
+                    </mrow>
+                    <mrow>
+                        <mn>0</mn>
+                    </mrow>
+                </msub>
+                <mo>/</mo>
+                <mfrac>
+                    <mn>1</mn>
+                    <msqrt>
+                        <mn>1</mn>
+                        <mo>-</mo>
+                        <mfrac>
+                            <msup>
+                                <mrow>
+                                    <mi>v</mi>
+                                </mrow>
+                                <mrow>
+                                    <mn>2</mn>
+                                </mrow>
+                            </msup>
+                            <msup>
+                                <mrow>
+                                    <mi>c</mi>
+                                </mrow>
+                                <mrow>
+                                    <mn>2</mn>
+                                </mrow>
+                            </msup>
+                        </mfrac>
+                    </msqrt>
+                </mfrac>
+            </math>
         </section>
         <section id="massexpansion">
             <h2>Mass Expansion</h2>
             <p>The law of <span class="postulate">conservation of momentum</span> is a fundamental part of physics. In
                 any system, <u>momentum</u> must be preserved.</p>
             <p>Because momentum is <u>mass</u> times <u>velocity</u>, and because velocity is <span
-                    class="postulate">relative to</span> the speed of light, for <u>momentum</u> to stay the same, <u>mass must change.</u></p>
+                    class="postulate">relative to</span> the speed of light, for <u>momentum</u> to stay the same,
+                <u>mass must change.</u>
+            </p>
             <p>This visualisation shows mass as an overlay.</p>
             <div class="starry view" data-mass data-viewid="massexpansion"></div>
+            <p>Because time only dilates (goes up) and never contracts (goes down), mass will always expand when an
+                object
+                goes faster.</p>
+            <p>Bob will still measure his mass as the same value (the <span class="postulate">rest mass</span>,
+                or M<sub>0</sub>), but a moving observer will see that he's <em>more massive</em>. This measurement is
+                called the <span class="postulate">expanded mass</span>, or M.</p>
+            <p>In this equation, if Bob sees himself as being 60kg, Taylor will see him as <span
+                    class="calculated">gamma(0.8)*60</span>kg!</p>
+            <p>This expansion follows a similar equation:</p>
+            <math>
+                <mi>M</mi>
+                <mo>=</mo>
+                <msub>
+                    <mrow>
+                        <mi>M</mi>
+                    </mrow>
+                    <mrow>
+                        <mn>0</mn>
+                    </mrow>
+                </msub>
+                <mfrac>
+                    <mn>1</mn>
+                    <msqrt>
+                        <mn>1</mn>
+                        <mo>-</mo>
+                        <mfrac>
+                            <msup>
+                                <mrow>
+                                    <mi>v</mi>
+                                </mrow>
+                                <mrow>
+                                    <mn>2</mn>
+                                </mrow>
+                            </msup>
+                            <msup>
+                                <mrow>
+                                    <mi>c</mi>
+                                </mrow>
+                                <mrow>
+                                    <mn>2</mn>
+                                </mrow>
+                            </msup>
+                        </mfrac>
+                    </msqrt>
+                </mfrac>
+            </math>
         </section>
         <section id="conclusion">
             <h2>In Conclusion,</h2>
-            <div class="starry view" data-length data-clock data-mass data-viewid="conclusion"></div>
+            <p>Once Bob gets through <span class="weird">physics demonstration space</span> and gets to Allie, everyone
+                gets in their spaceships. Feel free to play around with this simulation!</p>
+            <div class="starry view" data-length data-clock data-mass data-playground data-viewid="conclusion"></div>
+            <p>(For reference, <span class="character-pat">Pat</span> is going at 0.999c!)</p>
         </section>
     </main>
     <footer class="starry">
