@@ -11,6 +11,9 @@
     <script src="/stars.js"></script>
     <script src="/spaceviews.js"></script>
     <script src="/calculated-spans.js" defer></script>
+
+    <title>Light Speed Story</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
@@ -25,7 +28,9 @@
             <p>In order to see light-speed, this story uses <span class="magicunits">magic velocity units</span>.
                 Don't worry about how fast they are; all you need to know is that light moves at about <span
                     class="magicunits">100mvu</span>.</p>
-            <div class="starry view" data-viewid="intro"></div>
+            <div class="viewparent">
+                <div class="starry view" data-viewid="intro"></div>
+            </div>
         </section>
         <section id="relativity">
             <h2>Relativity</h2>
@@ -48,8 +53,9 @@
                 Try clicking on the spaceships to see the scenario from their point of view!
             </aside>
 
-            <div class="starry view" data-viewid="relativity"></div>
-
+            <div class="viewparent">
+                <div class="starry view" data-viewid="relativity"></div>
+            </div>
             <p>Even though everyone gets different measurements, <span class="character-taylor">Taylor</span> is
                 <em>always</em> moving <span class="magicunits nohighlight">20 mvu</span> faster than <span
                     class="character-bob">Bob</span>, and <span class="character-allie">Allie</span> is <em>always</em>
@@ -69,7 +75,9 @@
         </section>
         <section id="specialrelativity">
             <h2>Special Relativity</h2>
-            <div class="starry view" data-viewid="specialrelativity"></div>
+            <div class="viewparent">
+                <div class="starry view" data-viewid="specialrelativity"></div>
+            </div>
             <p>
                 <span class="character-taylor">Taylor</span> and <span class="character-bob">Bob</span> still move
                 relatively to one another. However, the light particle <em>always</em> moves at <span
@@ -199,7 +207,9 @@
             <p>Maybe you've heard of this one in sci-fi movies like Interstellar books or Ender's Game. Put simply,
                 <span class="postulate">a moving clock runs slower</span>.
             </p>
-            <div class="starry view" data-clock data-viewid="timedilation"></div>
+            <div class="viewparent">
+                <div class="starry view" data-clock data-viewid="timedilation"></div>
+            </div>
             <p>If Bob wants to get to Allie's house in 5 minutes, first he has to ask "5 minutes according to
                 <em>who?"</em>
                 If we're looking from Taylor's perspective, Bob takes <span class="calculated">gamma(0.8)</span> seconds
@@ -259,7 +269,9 @@
             </p>
             <p>From an observer's perspective, the distance being compressed shows as the <em>moving </em> "squishing"
                 in the direction of motion.</p>
-            <div class="starry view" data-length data-viewid="lengthcontraction"></div>
+            <div class="viewparent">
+                <div class="starry view" data-length data-viewid="lengthcontraction"></div>
+            </div>
             <p>From Bob's perspective, his "squish" (or "contraction") will always be 100%-- he'll stay the same as
                 normal. Because time can never run backwards, length can never be increased-- only decreased. From
                 Taylor's perspective, Bob is around <span class="calculated">1/gamma(0.8)*100</span>% as long as he
@@ -318,7 +330,9 @@
                 <u>mass must change.</u>
             </p>
             <p>This visualisation shows mass as an overlay.</p>
-            <div class="starry view" data-mass data-viewid="massexpansion"></div>
+            <div class="viewparent">
+                <div class="starry view" data-mass data-viewid="massexpansion"></div>
+            </div>
             <p>Because time only dilates (goes up) and never contracts (goes down), mass will always expand when an
                 object
                 goes faster.</p>
@@ -369,9 +383,14 @@
         <section id="conclusion">
             <h2>In Conclusion,</h2>
             <p>Once Bob gets through <span class="weird">physics demonstration space</span> and gets to Allie, everyone
-                gets in their spaceships. Feel free to play around with this simulation! It's mostly physically accurate (gravity isn't counted).</p>
-            <div class="starry view" data-length data-clock data-mass data-playground data-viewid="conclusion"></div>
-            <p>(For reference, <span class="character-pat">Pat</span> is going at 0.999c relative to <span class="character-bob">Bob</span>!)</p>
+                gets in their spaceships. Feel free to play around with this simulation! It's mostly physically accurate
+                (gravity isn't counted).</p>
+            <div class="viewparent">
+                <div class="starry view" data-length data-clock data-mass data-playground data-viewid="conclusion">
+                </div>
+            </div>
+            <p>(For reference, <span class="character-pat">Pat</span> is going at 0.999c relative to <span
+                    class="character-bob">Bob</span>!)</p>
         </section>
     </main>
     <footer class="starry">

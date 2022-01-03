@@ -240,7 +240,7 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
         
         if(tooltip && vInC == 0) {
             tooltip.style.opacity = (window.scrollY - initialScrollY - initialDistanceFromTop + fieldHeight) * ( 2 / rowHeight );
-            tooltip.setAttribute("transform", `translateY(${100 * Math.sin(scrollTransform)}px)`)
+            tooltip.setAttribute("transform", `translate(0, ${Math.round(1000 * 10 * Math.sin(scrollTransform / 20)) / 1000})`);
         } else if(tooltip) {
             tooltip.style.opacity = 0;
         }

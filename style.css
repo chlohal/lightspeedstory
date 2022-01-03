@@ -2,6 +2,10 @@
     box-sizing: border-box;
 }
 
+:root {
+    overflow-x: hidden;
+}
+
 body {
     margin: 0;
     background: #FFFCF2;
@@ -71,6 +75,7 @@ main {
     max-width: 100ch;
     margin: auto;
     margin-bottom: 2em;
+    padding: 0 1em;
 }
 
 section h2 {
@@ -167,6 +172,21 @@ aside.tip:hover::before {
     height: 60ch;
     border: 1ch solid #F564A9;
     border-radius: 2ch;
+    position: relative;
+}
+
+@media screen and (max-width: 60ch) {
+    .viewparent {
+        width: 100vw;
+        position: relative;
+        left: -1em;
+        overflow-x: auto;
+    }
+    .view {
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+    }
 }
 
 .view svg {
