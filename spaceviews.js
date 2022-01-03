@@ -1,3 +1,4 @@
+var DESIRED_TRAVERSAL_TIME_MS = 1000;
 var C_MVU = 100;
 
 var views = {
@@ -53,6 +54,21 @@ var views = {
             name: "c",
             velocity: C_MVU
         }
+    ],
+    "timedilation": [
+        {
+            name: "Bob",
+            velocity: 0,
+            
+        },
+        {
+            name: "Taylor",
+            velocity: 80,
+        },
+        {
+            name: "c",
+            velocity: C_MVU
+        }
     ]
 };
 
@@ -87,6 +103,8 @@ function addView(view) {
     var agents = [];
     
     viewData.reverse().forEach((x,i,a)=> {
+        x.clock = view.hasAttribute("data-clock");
+        
         var agentLayerRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         var height = h / a.length;
         agentLayerRect.setAttribute( "height", height);
@@ -127,7 +145,8 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
     var container = document.createElementNS("http://www.w3.org/2000/svg", "g");
     parent.appendChild(container);
     
-    container.appendChild(makeAgentVisualisation(config));
+    var visualiser = makeAgentVisualisation(config);
+    container.appendChild(visualiser.elem);
     
     var rowHeight = (fieldHeight / totalCount);
     //set it halfway through the assigned row
@@ -135,9 +154,11 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
     
     container.setAttribute("transform", `translate(0, ${heightTransform})`);
     
+    var resetSimulation = false;
+    
     var vInC = config.velocity / C_MVU;
     
-    var vInPixelsPerMs = (vInC * fieldWidth) / 1000;
+    var vInPixelsPerMs = (vInC * fieldWidth) / DESIRED_TRAVERSAL_TIME_MS;
     
     var x = fieldWidth / 2;
     
@@ -147,10 +168,13 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
     
     var lastTimeFrame = 0;
     var timeSinceLastFrame = 0;
-    requestAnimationFrame(function anim(t) {
+    var isInViewport = true;
+    function anim(t) {
         if(!lastTimeFrame) lastTimeFrame = t;
         timeSinceLastFrame = t - lastTimeFrame;
         
+        visualiser.updateClock(vInC, t, resetSimulation);
+        resetSimulation = false;
         
         x += vInPixelsPerMs * timeSinceLastFrame;
         if(x <= 0) x += fieldWidth*2;
@@ -169,8 +193,18 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
         
         lastTimeFrame = t;
         
-        requestAnimationFrame(anim);
-    });
+        if(isInViewport) requestAnimationFrame(anim);
+    }
+    //requestAnimationFrame(anim);
+    
+    (new IntersectionObserver(function(entries) {
+        if(entries[0].isIntersecting) {
+            isInViewport = true;
+            requestAnimationFrame(anim);
+        } else {
+            isInViewport = false;
+        }
+    })).observe(container);
     
     return function(newRelativeVelocity) {
         vInC = newRelativeVelocity / C_MVU;
@@ -178,6 +212,7 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
         vInPixelsPerMs = (vInC * fieldWidth) / 1000;
         x = fieldWidth / 2;
         
+        resetSimulation = true;
     }
 }
 
@@ -203,13 +238,68 @@ function createTooltip(config, parent, index) {
 }
 
 function makeAgentVisualisation(config) {
-    if(config.velocity == C_MVU) return makeLightSvg();
-    else return makePlanetSvg(config.velocity, config);
+    var group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    
+    var elem;
+    if(config.velocity == C_MVU) elem = makeLightSvg();
+    else elem = makePlanetSvg(config.velocity, config);
+    
+    group.appendChild(elem.elem);
+    
+    var visSize = elem.size;
+    
+    var clock, clockText, firstClockTime;
+    
+    if(config.velocity != C_MVU) {
+        if(config.clock) {
+            clock = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            clock.style.fill = "#0008";
+            
+            clockText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            clockText.style.fill = "#fff";
+            
+            group.appendChild(clock);
+            group.appendChild(clockText);
+        }
+    }
+    
+    return {
+        elem: group,
+        updateClock: function(relativeVelocity, time, reset) {  
+            if(!firstClockTime || reset) firstClockTime = time;
+                      
+            if(clock) {
+                time = time - firstClockTime;
+                
+                time /= gamma(relativeVelocity);
+                
+                var timeNorm = (time / DESIRED_TRAVERSAL_TIME_MS);
+                
+                clockText.textContent = Math.round(timeNorm);
+                
+                timeNorm -= Math.floor(timeNorm);
+                
+                //subtract pi/4 to normalise cartesian vs svg
+                var circleNormY = visSize * Math.sin(timeNorm * Math.PI * 2);
+                var circleNormX = visSize * Math.cos(timeNorm * Math.PI * 2);
+                
+                if(circleNormX == visSize) circleNormX += 0.1;
+                
+                var pathParams = ["M", 0, 0,
+                    "H", visSize,
+                                    "A", visSize, visSize, 0, +(timeNorm < 0.5), +false, circleNormX, circleNormY,
+                                    "L", 0, 0,
+                                "Z"];
+                
+                clock.setAttribute("d", pathParams.join(" ") );
+            }
+        }
+    }
 }
 function makePlanetSvg(v, config) {
     v /= C_MVU;
     
-    var size = 1 - v*v;
+    var size = 1 - (v*v)/5;
     
     var colors = {"bob": "#F2E678", "taylor": "#0A8754", "pat": "#CC5803", "allie": "#48ACF0"};
     
@@ -219,12 +309,27 @@ function makePlanetSvg(v, config) {
     e.setAttribute("rx", size*20);
     e.setAttribute("ry", size*20);
     e.style.fill = color;
-    return e;
+    return {
+        elem: e,
+        size: size*20
+    };
 }
 function makeLightSvg() {
     var e = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
     e.setAttribute("rx", 7);
     e.setAttribute("ry", 7);
     e.style.fill = "#ffffff";
-    return e;
+    return {
+        elem: e,
+        size: 7
+    };
+}
+
+function gamma(v) {
+    var g = 1 / Math.sqrt(
+            1 - (v*v)
+        );
+        
+
+    return g;
 }
