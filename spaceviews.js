@@ -117,7 +117,7 @@ var views = {
         },
         {
             name: "Pat",
-            velocity: 99.9,
+            velocity: 99,
         },
         {
             name: "c",
@@ -138,9 +138,10 @@ window.addEventListener("load", function() {
  */
 function addView(view) {
     var viewId = view.getAttribute("data-viewid");
-    var viewData = views[viewId];
+    //clone the data so we can reuse views
+    var viewData = deepClone(views[viewId]).reverse();
     
-    var perspective = 0;
+    var perspectiveIndex = viewData.length - 1;
     
     var viewBox = view.getClientRects()[0];
     
@@ -156,7 +157,7 @@ function addView(view) {
     
     var agents = [];
     
-    viewData.reverse().forEach((x,i,a)=> {
+    viewData.forEach((x,i,a)=> {
         x.clock = view.hasAttribute("data-clock");
         x.mass = view.hasAttribute("data-mass");
         x.length = view.hasAttribute("data-length");
@@ -175,9 +176,9 @@ function addView(view) {
         
         agentLayerRect.addEventListener("click", function() {
             if(x.velocity != C_MVU) {
-                perspective = x.velocity;
+                perspectiveIndex = i;
                 redrawCanvasIfPossible(view, i);
-                agents.forEach((x,i)=>x(calculateRelativeSpeed(viewData[i].velocity, perspective)));
+                agents.forEach((x,i)=>x(calculateRelativeSpeed(viewData[i].velocity, viewData[perspectiveIndex].velocity), true));
             }
         });
         
@@ -185,6 +186,14 @@ function addView(view) {
         svg.appendChild(agentLayerRect);
     });
     view.appendChild(svg);
+
+    if(view.hasAttribute("data-playground")) {
+        var playgroundElem = makePlayground(viewData, function() {
+            agents.forEach((x,i)=>x(calculateRelativeSpeed(viewData[i].velocity, viewData[perspectiveIndex].velocity)));
+        });
+        if(view.nextElementSibling) view.parentElement.insertBefore(playgroundElem, view.nextElementSibling);
+        else view.parentElement.appendChild(playgroundElem);
+    }
 }
 
 /**
@@ -236,7 +245,7 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
         if(x <= 0) x += fieldWidth*2;
         x %= fieldWidth;
         
-        var scrollTransform = (window.scrollY - initialScrollY - initialDistanceFromTop + rowHeight * index) * 0.2;
+        var scrollTransform = (window.scrollY - initialScrollY - initialDistanceFromTop + rowHeight * index * 0.1) * 0.2;
         
         if(tooltip && vInC == 0) {
             tooltip.style.opacity = (window.scrollY - initialScrollY - initialDistanceFromTop + fieldHeight) * ( 2 / rowHeight );
@@ -262,13 +271,15 @@ function makeAgent(config, index, totalCount, fieldWidth, fieldHeight, parent, i
         }
     })).observe(parent);
     
-    return function(newRelativeVelocity) {
+    return function(newRelativeVelocity, doCompleteReload) {
         vInC = newRelativeVelocity / C_MVU;
     
-        vInPixelsPerMs = (vInC * fieldWidth) / 1000;
-        x = fieldWidth / 2;
-        
-        resetSimulation = true;
+        vInPixelsPerMs = (vInC * fieldWidth) / DESIRED_TRAVERSAL_TIME_MS;
+
+        if(doCompleteReload) {
+            x = fieldWidth / 2;       
+            resetSimulation = true;
+        }
     }
 }
 
@@ -414,4 +425,57 @@ function gamma(v) {
 
 function calculateRelativeSpeed(v, p) {
     return (v - p) / (1 - (v*p)/(C_MVU*C_MVU));
+}
+
+function deepClone(obj) {
+    if(typeof obj !== "object") return obj;
+
+    var o = {};
+    if(obj.constructor === Array) {
+        o = [];
+        o.length = obj.length;
+    }
+    Object.keys(obj).forEach(x=>o[x]=deepClone(obj[x]));
+    return o;
+}
+
+function makePlayground(viewData, reloadCb) {
+    var playground = document.createElement("div");
+    playground.classList.add("playground");
+
+    for(var i = 0; i < viewData.length; i++) {
+        if(viewData[i].velocity != C_MVU) playground.appendChild(makePlaygroundSlider(viewData[i], reloadCb));
+        
+    }
+
+    return playground;
+}
+
+function makePlaygroundSlider(config, cb) {
+    var parent = document.createElement("label");
+    var label = document.createElement("span");
+
+    parent.classList.add("character-" + config.name.toLowerCase());
+
+    var slider = document.createElement("input");
+    slider.classList.add("slider");
+    slider.type = "range";
+    slider.min = 0;
+    slider.max = 0.99;
+    slider.step = 0.01;
+    slider.value = config.velocity / C_MVU;
+
+    label.textContent = (config.velocity / C_MVU) + "c";
+    label.classList.add("num");
+
+    slider.addEventListener("input", function() {
+        config.velocity = slider.valueAsNumber * C_MVU;
+        label.textContent = slider.value + "c";
+        cb();
+    });
+
+
+    parent.appendChild(slider);
+    parent.appendChild(label);
+    return parent;
 }
