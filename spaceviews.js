@@ -362,7 +362,6 @@ function makeAgentVisualisation(config) {
                 var circleNormY = visSize * Math.sin(timeNorm * Math.PI * 2);
                 var circleNormX = visSize * Math.cos(timeNorm * Math.PI * 2);
                 
-                if(circleNormX == visSize) circleNormX += 0.1;
                 
                 var pathParams = ["M", 0, 0,
                     "H", visSize,
@@ -465,17 +464,25 @@ function makePlaygroundSlider(config, cb) {
     slider.step = 0.01;
     slider.value = config.velocity / C_MVU;
 
-    label.textContent = (config.velocity / C_MVU) + "c";
+    setLabel(config.velocity / C_MVU);
     label.classList.add("num");
 
     slider.addEventListener("input", function() {
         config.velocity = slider.valueAsNumber * C_MVU;
-        label.textContent = slider.value + "c";
+        setLabel(slider.valueAsNumber);
         cb();
     });
+
+    function setLabel(velocity) {
+        label.textContent = velocity + "c";
+    }
 
 
     parent.appendChild(slider);
     parent.appendChild(label);
     return parent;
+}
+
+function roundPresentation(n) {
+    return Math.round(n*100)/100;
 }
