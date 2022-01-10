@@ -315,7 +315,7 @@ function makeAgentVisualisation(config) {
     
     var visSize = elem.size;
     
-    var clock, clockText, firstClockTime;
+    var clock, clockText, lastClockTime, internalReferenceFrameTime;
 
     var mass;
 
@@ -345,16 +345,19 @@ function makeAgentVisualisation(config) {
     return {
         elem: group,
         updateClock: function(relativeVelocity, time, reset) {  
-            if(!firstClockTime || reset) firstClockTime = time;
+            if(!lastClockTime || reset) lastClockTime = time;
+            if(!internalReferenceFrameTime || reset) internalReferenceFrameTime = 0;
                       
             if(clock) {
-                time = time - firstClockTime;
+                var deltaTime = time - lastClockTime;
                 
-                time /= gamma(relativeVelocity);
+                deltaTime /= gamma(relativeVelocity);
+
+                internalReferenceFrameTime += deltaTime;
                 
-                var timeNorm = (time / DESIRED_TRAVERSAL_TIME_MS);
+                var timeNorm = (internalReferenceFrameTime / DESIRED_TRAVERSAL_TIME_MS);
                 
-                clockText.textContent = Math.round(timeNorm);
+                clockText.textContent = Math.floor(timeNorm);
                 
                 timeNorm -= Math.floor(timeNorm);
                 
@@ -370,6 +373,8 @@ function makeAgentVisualisation(config) {
                                 "Z"];
                 
                 clock.setAttribute("d", pathParams.join(" ") );
+
+                lastClockTime = time;
             }
             if(mass) {
                 var massVisSize = visSize + gamma(relativeVelocity) * AGENT_MASS * 2;
