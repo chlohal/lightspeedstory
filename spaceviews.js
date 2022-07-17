@@ -168,7 +168,7 @@ function addView(view) {
         agentLayerRect.setAttribute("y", i * height);
         agentLayerRect.setAttribute("x", 0);
         agentLayerRect.setAttribute("width", w);
-        agentLayerRect.setAttribute("tabIndex", 0);
+        agentLayerRect.setAttribute("tabindex", 0);
         
         agentLayerRect.style.fill = "#00000001";
         
